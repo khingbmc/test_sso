@@ -103,42 +103,25 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # Baseline configuration.
-AUTH_LDAP_SERVER_URI = 'ldap://10.148.0.3'
+AUTH_LDAP_SERVER_URI = 'ldap://35.240.208.53'
 
-AUTH_LDAP_BIND_DN = 'cn=django-agent,dc=example,dc=com'
-AUTH_LDAP_BIND_PASSWORD = 'phlebotinum'
+AUTH_LDAP_BIND_DN = 'test3@etcg.com'
+AUTH_LDAP_BIND_PASSWORD = 'q?fUuvodoc<O]{p'
 AUTH_LDAP_USER_SEARCH = LDAPSearch(
-    'ou=users,dc=example,dc=com',
+    'OU=AD_USER,DC=etcg,DC=com',
     ldap.SCOPE_SUBTREE,
-    '(uid=%(user)s)',
+    '(sAMAccountName=%(user)s)',
 )
 # Or:
 # AUTH_LDAP_USER_DN_TEMPLATE = 'uid=%(user)s,ou=users,dc=example,dc=com'
 
 # Set up the basic group parameters.
 AUTH_LDAP_GROUP_SEARCH = LDAPSearch(
-    'ou=django,ou=groups,dc=example,dc=com',
+    'OU=AD_USER,DC=etcg,DC=com',
     ldap.SCOPE_SUBTREE,
     '(objectClass=groupOfNames)',
 )
 AUTH_LDAP_GROUP_TYPE = GroupOfNamesType(name_attr='cn')
-
-# Simple group restrictions
-AUTH_LDAP_REQUIRE_GROUP = 'cn=enabled,ou=django,ou=groups,dc=example,dc=com'
-AUTH_LDAP_DENY_GROUP = 'cn=disabled,ou=django,ou=groups,dc=example,dc=com'
-
-# Populate the Django user from the LDAP directory.
-AUTH_LDAP_USER_ATTR_MAP = {
-    'first_name': 'givenName',
-    'last_name': 'sn',
-    'email': 'mail',
-}
-
-AUTH_LDAP_USER_FLAGS_BY_GROUP = {
-    'is_active': 'cn=active,ou=django,ou=groups,dc=example,dc=com',
-    'is_staff': 'cn=staff,ou=django,ou=groups,dc=example,dc=com',
-    'is_superuser': 'cn=superuser,ou=django,ou=groups,dc=example,dc=com',
-}
 
 # This is the default, but I like to be explicit.
 AUTH_LDAP_ALWAYS_UPDATE_USER = True
@@ -178,3 +161,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {"console": {"class": "logging.StreamHandler"}},
+    "loggers": {"django_auth_ldap": {"level": "DEBUG", "handlers": ["console"]}},
+}

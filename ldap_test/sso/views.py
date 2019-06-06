@@ -73,30 +73,14 @@ def get_client_ip(request):
         ip = request.META.get('REMOTE_ADDR')
     return ip
 
+from django.contrib.auth import authenticate, login
 
 def index(req):
-    context = {}
-    username = "khing"
-    print("eiei")
-    password = "cash$C0w"
-    usernamenew = username+"@etcg.com"
-    l = ldap.initialize('ldap://10.148.0.3')
-    try:
+    user = authenticate(username="test123", password="ABC123def")
 
-        print(str(l))
-        print(l.simple_bind_s(usernamenew, password))
-        ldap_base = "dc=etcg,dc=com"
-        criteria = "(&(objectClass=user)(sAMAccountName=username))"
-        attributes = ['displayName']
-        result = l.search_s(ldap_base, ldap.SCOPE_SUBTREE, criteria, attributes)
-        results = [entry for dn, entry in result if isinstance(entry, dict)]
-        print(results)
-        print("\nzaza\n\n")
-        return render(req, 'sso/index.html', context)
-
-
-
-    finally:
-
-        l.unbind()
-
+    if user is not None:
+        login(req, user)
+        state = "Valid account"
+    else:
+        state = "Inactive account"
+    return render(req, 'sso/index.html', {"test": state})

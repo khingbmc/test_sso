@@ -3,7 +3,7 @@ import ldap
 def main():
     con = ldap.initialize('ldap://35.240.208.53:389')
 
-    user_dn = r"test3@etcg.com"
+    user_dn = "test3@etcg.com"
     password = "q?fUuvodoc<O]{p"
 
     query = "(&(objectClass=user)(sAMAccountName=khing))"
@@ -15,11 +15,11 @@ def main():
         res = con.search_s("OU=AD_USER,DC=etcg,DC=com", ldap.SCOPE_SUBTREE, query)
         # username, password = input(), input()
         for i, j in res:
-            print(i)
+            print("user"+i)
         # 'sAMAccountName':
         # for dn, entry in res:
         #     print(entry)
     except Exception as error:
-        print(error)
+        print("err "+error)
 
 main()
