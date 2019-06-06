@@ -28,7 +28,7 @@ group03 = 0
 #             l = ldap.initialize(settings.AUTH_LDAP_SERVER_URI)
 #
 #             print(l.simple_bind_s(usernamenew, password))
-#             ldap_base = "dc=pcnmanage,dc=net"
+#             ldap_base = "dc=etcg,dc=com"
 #             query = "(cn="+username+")"
 #             result = l.search_s(ldap_base, ldap.SCOPE_SUBTREE, query)
 #             check = result[0][0].find("OU=")
@@ -65,23 +65,38 @@ group03 = 0
 #         print(username + '  ' + password)
 #         return render(request, template_name='siteldap/index.html', context=context)
 
+def get_client_ip(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip
+
 
 def index(req):
     context = {}
     username = "khing"
     print("eiei")
-    password = "FGErok75"
+    password = "cash$C0w"
     usernamenew = username+"@etcg.com"
-
+    l = ldap.initialize('ldap://10.148.0.3')
     try:
-        l = ldap.initialize('ldap://35.240.208.53')
+
         print(str(l))
-        context['test'] = l.simple_bind(usernamenew, password)
+        print(l.simple_bind_s(usernamenew, password))
+        ldap_base = "dc=etcg,dc=com"
+        criteria = "(&(objectClass=user)(sAMAccountName=username))"
+        attributes = ['displayName']
+        result = l.search_s(ldap_base, ldap.SCOPE_SUBTREE, criteria, attributes)
+        results = [entry for dn, entry in result if isinstance(entry, dict)]
+        print(results)
+        print("\nzaza\n\n")
         return render(req, 'sso/index.html', context)
 
 
-    except ldap.LDAPError:
-        context['error'] = 'username and password incorrect'
-        print("eiei========================="+context['error'])
-        return render(req, 'sso/index.html', context)
+
+    finally:
+
+        l.unbind()
 
